@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ucmmaster</groupId>
+        <artifactId>kafka-curso</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>schema-registry</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-schema-registry-maven-plugin</artifactId>
+                <configuration>
+                    <schemaRegistryUrls>
+                        <param>http://localhost:8081</param>
+                    </schemaRegistryUrls>
+                    <schemaTypes>
+                        <temperature-telemetry>AVRO</temperature-telemetry>
+                    </schemaTypes>
+                    <compatibilityLevels>
+                        <temperature-telemetry>FORWARD</temperature-telemetry>
+                    </compatibilityLevels>
+                    <subjects>
+                        <temperature-telemetry-value>${project.basedir}/src/main/avro/com.ucmmaster.kafka.data.v2.TemperatureTelemetry.avsc</temperature-telemetry-value>
+                    </subjects>
+                </configuration>
+                <goals>
+                    <goal>test-compatibility</goal>
+                </goals>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

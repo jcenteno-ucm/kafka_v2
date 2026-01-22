@@ -11,6 +11,7 @@ Para poder hacer uso de los dos ficheros python necesitamos instalar la dependen
 ```bash
 python -m venv kafka
 source kafka/bin/activate
+pip install --upgrade pip
 pip install confluent_kafka 
 ```
 
