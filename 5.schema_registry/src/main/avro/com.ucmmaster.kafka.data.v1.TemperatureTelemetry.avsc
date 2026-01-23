@@ -1,0 +1,18 @@
+{
+  "namespace": "com.ucmmaster.kafka.data.v1",
+  "type": "record",
+  "name": "TemperatureTelemetry",
+  "doc": "This schema describes a temperature telemetry event produced in a device",
+  "fields": [
+    {
+      "name": "id",
+      "type": "int",
+      "doc": "Device id"
+    },
+    {
+      "name": "temperature",
+      "type": "int",
+      "doc": "Temperature Celsius"
+    }
+  ]
+}
