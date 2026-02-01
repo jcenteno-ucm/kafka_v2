@@ -21,7 +21,7 @@ value_serializer = AvroSerializer(
     schema_registry_client=schema_registry_client,
     schema_str=schema_str,
     conf={
-        'auto.register.schemas': True
+        'auto.register.schemas': False
     }
 )
 
