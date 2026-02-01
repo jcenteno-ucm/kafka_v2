@@ -1,5 +1,6 @@
 import random
 import logging
+from time import time
 from confluent_kafka import SerializingProducer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer
@@ -12,7 +13,7 @@ schema_registry_config = {'url': 'http://localhost:8081'}
 schema_registry_client = SchemaRegistryClient(schema_registry_config)
 
 schema_str = None
-schema_path = '../avro/com.ucmmaster.kafka.data.v2.TemperatureTelemetry.avsc'
+schema_path = '../avro/com.ucmmaster.kafka.data.v3.TemperatureTelemetry.avsc'
 with open(schema_path, "r") as f:
     schema_str = f.read()
 
@@ -20,7 +21,7 @@ value_serializer = AvroSerializer(
     schema_registry_client=schema_registry_client,
     schema_str=schema_str,
     conf={
-        'auto.register.schemas': False
+        'auto.register.schemas': True
     }
 )
 
@@ -34,7 +35,8 @@ producer = SerializingProducer({
 data = {
     "id": random.randint(1, 10),
     "temperature": random.randint(1, 40),
-    "humidity": random.randint(10, 80)
+    "humidity": random.randint(10, 80),
+    "read_at": int(time())
 }
 
 def delivery_report(err, msg):
