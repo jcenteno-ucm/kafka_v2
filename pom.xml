@@ -38,9 +38,10 @@
     </pluginRepositories>
 
     <modules>
+        <module>0.tarea</module>
         <module>4.java</module>
         <module>5.schema_registry</module>
-        <module>0.tarea</module>
+        <module>7.kafka_streams</module>
     </modules>
 
     <dependencyManagement>
