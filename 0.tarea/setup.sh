@@ -13,6 +13,7 @@ docker exec mysql bash -c "mysql --user=root --password=password --database=db <
 echo "Instalando conectores..."
 docker compose exec connect confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 docker compose exec connect confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:latest
+docker compose exec connect confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:latest
 
 echo "Copiando drivers MySQL..."
 docker cp ./mysql/mysql-connector-java-5.1.45.jar connect:/usr/share/confluent-hub-components/confluentinc-kafka-connect-jdbc/lib/mysql-connector-java-5.1.45.jar
