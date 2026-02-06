@@ -10,23 +10,22 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
 public class KTableApp {
 
+    private static final Logger logger = LoggerFactory.getLogger(KTableApp.class.getName());
+
     public static void main(String[] args) throws IOException {
 
         // Cargamos la configuración
-        Properties props = new Properties();
-        String config = "streams.properties";
-        try (InputStream fis = KTableApp.class.getClassLoader().getResourceAsStream(config)) {
-            props.load(fis);
-        }
+        Properties props = ConfigLoader.getProperties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "ktable-app");
 
         final String inputTopic = "temperature-telemetry-avro";
@@ -34,7 +33,7 @@ public class KTableApp {
 
         //Creamos un Serde de tipo Avro ya que el productor produce <String,TemperatureTelemetry>
         final Map<String, String> serdeConfig = Collections.singletonMap("schema.registry.url", "http://localhost:8081");
-        Serde<TemperatureTelemetry> temperatureTelemetrySerde = new SpecificAvroSerde();
+        Serde<TemperatureTelemetry> temperatureTelemetrySerde = new SpecificAvroSerde<>();
         temperatureTelemetrySerde.configure(serdeConfig, false);
 
         //Creamos el KTable mediante el builder
@@ -49,11 +48,13 @@ public class KTableApp {
                 .peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value))
                 .to(outputTopic, Produced.with(Serdes.String(), temperatureTelemetrySerde));
 
-        // Iniciar Kafka Streams
-        KafkaStreams streams = new KafkaStreams(builder.build(), props);
-        streams.start();
-
-        // Parada controlada en caso de apagado
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        try(KafkaStreams streams = new KafkaStreams(builder.build(), props)){
+            // Iniciar Kafka Streams
+            streams.start();
+            // Parada controlada en caso de apagado
+            Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        }catch (IllegalStateException ex){
+            logger.error(ex.getMessage());
+        }
     }
 }

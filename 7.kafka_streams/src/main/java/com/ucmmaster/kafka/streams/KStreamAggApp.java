@@ -3,15 +3,15 @@ package com.ucmmaster.kafka.streams;
 import com.ucmmaster.kafka.data.v2.TemperatureTelemetry;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
@@ -19,21 +19,19 @@ import java.util.Properties;
 
 public class KStreamAggApp {
 
+    private static final Logger logger = LoggerFactory.getLogger(KStreamAggApp.class.getName());
+
     public static void main(String[] args) throws IOException {
         // Cargamos la configuración
-        Properties props = new Properties();
-        String config = "streams.properties";
-        try (InputStream fis = KStreamApp.class.getClassLoader().getResourceAsStream(config)) {
-            props.load(fis);
-        }
+        Properties props = ConfigLoader.getProperties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kstream-agg-app");
 
         final String inputTopic = "temperature-telemetry-avro";
         final String outputTopic = "temperature-telemetry-max";
 
-        //Creamos un Serde de tipo Avro ya que el productor produce <String,TemperatureTelemetry>
         final Map<String, String> serdeConfig = Collections.singletonMap("schema.registry.url", "http://localhost:8081");
-        Serde<TemperatureTelemetry> temperatureTelemetrySerde = new SpecificAvroSerde();
+        //Creamos un Serde de tipo Avro ya que el productor produce <String,TemperatureTelemetry>
+        Serde<TemperatureTelemetry> temperatureTelemetrySerde = new SpecificAvroSerde<>();
         temperatureTelemetrySerde.configure(serdeConfig, false);
 
         Serde<GenericRecord>  genericSerde = new GenericAvroSerde();
@@ -55,11 +53,13 @@ public class KStreamAggApp {
                 .peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value))
                 .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
 
-        // Iniciar Kafka Streams
-        KafkaStreams streams = new KafkaStreams(builder.build(), props);
-        streams.start();
-
-        // Manejar cierre del programa
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        try(KafkaStreams streams = new KafkaStreams(builder.build(), props)){
+            // Iniciar Kafka Streams
+            streams.start();
+            // Parada controlada en caso de apagado
+            Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        }catch (IllegalStateException ex){
+            logger.error(ex.getMessage());
+        }
     }
 }

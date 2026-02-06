@@ -15,10 +15,10 @@ import org.apache.avro.message.SchemaStore;
 /** This schema describes a temperature telemetry event produced in a device */
 @org.apache.avro.specific.AvroGenerated
 public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -5983618955679338710L;
+  private static final long serialVersionUID = 4200350030551712709L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TemperatureTelemetry\",\"namespace\":\"com.ucmmaster.kafka.data.v2\",\"doc\":\"This schema describes a temperature telemetry event produced in a device\",\"fields\":[{\"name\":\"id\",\"type\":\"int\",\"doc\":\"Device id\"},{\"name\":\"temperature\",\"type\":\"int\",\"doc\":\"Temperature Celsius\"},{\"name\":\"humidity\",\"type\":[\"null\",\"int\"],\"doc\":\"Humidity percentage\",\"default\":null},{\"name\":\"read_at\",\"type\":[\"null\",\"long\"],\"doc\":\"Date and time from the read\",\"default\":null,\"logicalType\":\"local-timestamp-millis\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TemperatureTelemetry\",\"namespace\":\"com.ucmmaster.kafka.data.v2\",\"doc\":\"This schema describes a temperature telemetry event produced in a device\",\"fields\":[{\"name\":\"id\",\"type\":\"int\",\"doc\":\"Device id\"},{\"name\":\"temperature\",\"type\":\"int\",\"doc\":\"Temperature Celsius\"},{\"name\":\"humidity\",\"type\":\"int\",\"doc\":\"Humidity percentage\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -79,9 +79,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
   /** Temperature Celsius */
   private int temperature;
   /** Humidity percentage */
-  private java.lang.Integer humidity;
-  /** Date and time from the read */
-  private java.lang.Long read_at;
+  private int humidity;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -95,13 +93,11 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
    * @param id Device id
    * @param temperature Temperature Celsius
    * @param humidity Humidity percentage
-   * @param read_at Date and time from the read
    */
-  public TemperatureTelemetry(java.lang.Integer id, java.lang.Integer temperature, java.lang.Integer humidity, java.lang.Long read_at) {
+  public TemperatureTelemetry(java.lang.Integer id, java.lang.Integer temperature, java.lang.Integer humidity) {
     this.id = id;
     this.temperature = temperature;
     this.humidity = humidity;
-    this.read_at = read_at;
   }
 
   @Override
@@ -117,7 +113,6 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
     case 0: return id;
     case 1: return temperature;
     case 2: return humidity;
-    case 3: return read_at;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -130,7 +125,6 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
     case 0: id = (java.lang.Integer)value$; break;
     case 1: temperature = (java.lang.Integer)value$; break;
     case 2: humidity = (java.lang.Integer)value$; break;
-    case 3: read_at = (java.lang.Long)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -175,7 +169,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
    * Gets the value of the 'humidity' field.
    * @return Humidity percentage
    */
-  public java.lang.Integer getHumidity() {
+  public int getHumidity() {
     return humidity;
   }
 
@@ -185,26 +179,8 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
    * Humidity percentage
    * @param value the value to set.
    */
-  public void setHumidity(java.lang.Integer value) {
+  public void setHumidity(int value) {
     this.humidity = value;
-  }
-
-  /**
-   * Gets the value of the 'read_at' field.
-   * @return Date and time from the read
-   */
-  public java.lang.Long getReadAt() {
-    return read_at;
-  }
-
-
-  /**
-   * Sets the value of the 'read_at' field.
-   * Date and time from the read
-   * @param value the value to set.
-   */
-  public void setReadAt(java.lang.Long value) {
-    this.read_at = value;
   }
 
   /**
@@ -253,9 +229,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
     /** Temperature Celsius */
     private int temperature;
     /** Humidity percentage */
-    private java.lang.Integer humidity;
-    /** Date and time from the read */
-    private java.lang.Long read_at;
+    private int humidity;
 
     /** Creates a new Builder */
     private Builder() {
@@ -280,10 +254,6 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
         this.humidity = data().deepCopy(fields()[2].schema(), other.humidity);
         fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
-      if (isValidValue(fields()[3], other.read_at)) {
-        this.read_at = data().deepCopy(fields()[3].schema(), other.read_at);
-        fieldSetFlags()[3] = other.fieldSetFlags()[3];
-      }
     }
 
     /**
@@ -303,10 +273,6 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
       if (isValidValue(fields()[2], other.humidity)) {
         this.humidity = data().deepCopy(fields()[2].schema(), other.humidity);
         fieldSetFlags()[2] = true;
-      }
-      if (isValidValue(fields()[3], other.read_at)) {
-        this.read_at = data().deepCopy(fields()[3].schema(), other.read_at);
-        fieldSetFlags()[3] = true;
       }
     }
 
@@ -401,7 +367,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
       * Humidity percentage
       * @return The value.
       */
-    public java.lang.Integer getHumidity() {
+    public int getHumidity() {
       return humidity;
     }
 
@@ -412,7 +378,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
       * @param value The value of 'humidity'.
       * @return This builder.
       */
-    public com.ucmmaster.kafka.data.v2.TemperatureTelemetry.Builder setHumidity(java.lang.Integer value) {
+    public com.ucmmaster.kafka.data.v2.TemperatureTelemetry.Builder setHumidity(int value) {
       validate(fields()[2], value);
       this.humidity = value;
       fieldSetFlags()[2] = true;
@@ -435,52 +401,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
       * @return This builder.
       */
     public com.ucmmaster.kafka.data.v2.TemperatureTelemetry.Builder clearHumidity() {
-      humidity = null;
       fieldSetFlags()[2] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'read_at' field.
-      * Date and time from the read
-      * @return The value.
-      */
-    public java.lang.Long getReadAt() {
-      return read_at;
-    }
-
-
-    /**
-      * Sets the value of the 'read_at' field.
-      * Date and time from the read
-      * @param value The value of 'read_at'.
-      * @return This builder.
-      */
-    public com.ucmmaster.kafka.data.v2.TemperatureTelemetry.Builder setReadAt(java.lang.Long value) {
-      validate(fields()[3], value);
-      this.read_at = value;
-      fieldSetFlags()[3] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'read_at' field has been set.
-      * Date and time from the read
-      * @return True if the 'read_at' field has been set, false otherwise.
-      */
-    public boolean hasReadAt() {
-      return fieldSetFlags()[3];
-    }
-
-
-    /**
-      * Clears the value of the 'read_at' field.
-      * Date and time from the read
-      * @return This builder.
-      */
-    public com.ucmmaster.kafka.data.v2.TemperatureTelemetry.Builder clearReadAt() {
-      read_at = null;
-      fieldSetFlags()[3] = false;
       return this;
     }
 
@@ -492,7 +413,6 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
         record.id = fieldSetFlags()[0] ? this.id : (java.lang.Integer) defaultValue(fields()[0]);
         record.temperature = fieldSetFlags()[1] ? this.temperature : (java.lang.Integer) defaultValue(fields()[1]);
         record.humidity = fieldSetFlags()[2] ? this.humidity : (java.lang.Integer) defaultValue(fields()[2]);
-        record.read_at = fieldSetFlags()[3] ? this.read_at : (java.lang.Long) defaultValue(fields()[3]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -529,21 +449,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
 
     out.writeInt(this.temperature);
 
-    if (this.humidity == null) {
-      out.writeIndex(0);
-      out.writeNull();
-    } else {
-      out.writeIndex(1);
-      out.writeInt(this.humidity);
-    }
-
-    if (this.read_at == null) {
-      out.writeIndex(0);
-      out.writeNull();
-    } else {
-      out.writeIndex(1);
-      out.writeLong(this.read_at);
-    }
+    out.writeInt(this.humidity);
 
   }
 
@@ -556,22 +462,10 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
 
       this.temperature = in.readInt();
 
-      if (in.readIndex() != 1) {
-        in.readNull();
-        this.humidity = null;
-      } else {
-        this.humidity = in.readInt();
-      }
-
-      if (in.readIndex() != 1) {
-        in.readNull();
-        this.read_at = null;
-      } else {
-        this.read_at = in.readLong();
-      }
+      this.humidity = in.readInt();
 
     } else {
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 3; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.id = in.readInt();
@@ -582,21 +476,7 @@ public class TemperatureTelemetry extends org.apache.avro.specific.SpecificRecor
           break;
 
         case 2:
-          if (in.readIndex() != 1) {
-            in.readNull();
-            this.humidity = null;
-          } else {
-            this.humidity = in.readInt();
-          }
-          break;
-
-        case 3:
-          if (in.readIndex() != 1) {
-            in.readNull();
-            this.read_at = null;
-          } else {
-            this.read_at = in.readLong();
-          }
+          this.humidity = in.readInt();
           break;
 
         default:
