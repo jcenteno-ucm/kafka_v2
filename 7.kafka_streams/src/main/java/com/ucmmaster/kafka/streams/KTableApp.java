@@ -1,6 +1,6 @@
 package com.ucmmaster.kafka.streams;
 
-import com.ucmmaster.kafka.data.v2.TemperatureTelemetry;
+import com.ucmmaster.kafka.data.v1.TemperatureTelemetry;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -45,16 +45,14 @@ public class KTableApp {
         firstKTable
                 .filter((key, value) -> value.getTemperature() < 30)
                 .toStream()
+                .filter((key, value) -> value != null)
                 .peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value))
                 .to(outputTopic, Produced.with(Serdes.String(), temperatureTelemetrySerde));
 
-        try(KafkaStreams streams = new KafkaStreams(builder.build(), props)){
-            // Iniciar Kafka Streams
-            streams.start();
-            // Parada controlada en caso de apagado
-            Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
-        }catch (IllegalStateException ex){
-            logger.error(ex.getMessage());
-        }
+        KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        // Iniciar Kafka Streams
+        streams.start();
+        // Parada controlada en caso de apagado
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
     }
 }
