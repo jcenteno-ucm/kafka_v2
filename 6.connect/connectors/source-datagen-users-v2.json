@@ -2,7 +2,7 @@
   "name": "source-datagen-users-v2",
   "config": {
     "connector.class": "io.confluent.kafka.connect.datagen.DatagenConnector",
-    "kafka.topic": "users_v2",
+    "kafka.topic": "users",
     "quickstart": "users",
     "max.interval": 1000,
     "iterations": 10000000,

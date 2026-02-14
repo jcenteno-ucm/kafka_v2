@@ -262,6 +262,11 @@ observando que ahora si los tenemos disponible:
 
 > ❗️ **NOTA**<br/>El connector JDBC instala dos conectores: el tipo Source como el Sink
 
+## Connector Config
+
+```bash
+curl http://localhost:8083/connector-plugins/io.confluent.kafka.connect.datagen.DatagenConnector/config | jq
+```
 
 # Ejercicio 1
 
@@ -303,6 +308,14 @@ Además de configuración específica del conector, como que usamos el quickstar
 7. `value.converter`: Establecemos serializacion en avro
 8. `value.converter.schema.registry.url` : url del schema registry
 9. `value.converter.schemas.enable` : indica que no se incruste el esquema completo dentro de cada mensaje Kafka sino el ID del esquema registrado en el Schema Registry. Es el comportamiento por defecto pero lo hago explicito porque en versiones anteriores no lo era.
+
+para validar esta configuración podemos usar el siguiente endpoint
+
+```bash
+curl -d @"./connectors/source-datagen-users.json" -H "Content-Type: application/json" -X POST http://localhost:8083/connector-plugins/sink/config/validate | jq
+```
+
+💎 Este comando es muy util para detectar problemas en nuestra configuración antes de lanzar el conector.
 
 para publicar esta configuración volveremos a usar el api de connect:
 
