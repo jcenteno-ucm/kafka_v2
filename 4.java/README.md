@@ -104,9 +104,9 @@ http://localhost:8081/schemas
 
 http://localhost:8081/subjects
 
-http://localhost:8081/subjects/temperature-telemetry-avro-value/versions
+http://localhost:8081/subjects/temperature-telemetry-value/versions
 
-http://localhost:8081/subjects/temperature-telemetry-avro-value/versions/1
+http://localhost:8081/subjects/temperature-telemetry-value/versions/1
 
 ### Console Consumer
 
@@ -115,7 +115,7 @@ Vamos a probar a consumir los mensajes desde la herramienta de consola:
 ¿Qué pasará?
 
 ```bash
-kafka-console-consumer --bootstrap-server broker-1:29092 --topic temperature-telemetry-avro --property print.key=true    
+kafka-console-consumer --bootstrap-server broker-1:29092 --topic temperature-telemetry --property print.key=true    
 ``` 
 
 <details>
@@ -173,9 +173,9 @@ Arranca de nuevo la aplicación productora y observa los nuevos mensajes produci
 
 Comprueba el Schema Registry:
 
-http://localhost:8081/subjects/temperature-telemetry-avro-value/versions
+http://localhost:8081/subjects/temperature-telemetry-value/versions
 
-http://localhost:8081/subjects/temperature-telemetry-avro-value/versions/2
+http://localhost:8081/subjects/temperature-telemetry-value/versions/2
 
 http://localhost:8081/config
 

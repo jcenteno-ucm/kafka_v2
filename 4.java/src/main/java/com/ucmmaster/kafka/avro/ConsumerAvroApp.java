@@ -9,7 +9,7 @@ public class ConsumerAvroApp {
 
   public static void main(String[] args) {
     String config = "avro-client.properties";
-    String topic  = "temperature-telemetry-avro";
+    String topic  = "temperature-telemetry";
 
     Thread consumerThread1 = new Thread(() -> createConsumer("consumer-0",config,topic));
     Thread consumerThread2 = new Thread(() -> createConsumer("consumer-1",config,topic));

@@ -32,7 +32,7 @@ python python_producer.py list-topics
 Recibe tres parámetros: topic, key y el value. A continuación un ejemplo
 
 ```bash
-python python_producer.py produce -t temperature-telemetry -k '1' -v '{"id": 1, "temperature": 15}'  
+python python_producer.py produce -t temperature-telemetry-simple -k '1' -v '{"id": 1, "temperature": 15}'  
 ```
 ## Consumer API
 
@@ -41,7 +41,7 @@ El fichero **python_consumer.py** es una aplicación python que permite consumir
 Recibe dos parámetros posicionales: el topic y la duración en segundos que estará consumiendo. A continuación un ejemplo de consumir durante un minuto (60s) 
 
 ```bash
-python python_consumer.py temperature-telemetry 300
+python python_consumer.py temperature-telemetry-simple 300
 ```
 > ⚠️ **NOTA**<br/>La configuración tanto del productor como del consumidor están harcodeadas en los propios ficheros python 🙅‍
 

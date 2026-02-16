@@ -21,12 +21,9 @@ public class KStreamAggApp {
 
     private static final Logger logger = LoggerFactory.getLogger(KStreamAggApp.class.getName());
 
-    public static void main(String[] args) throws IOException {
-        // Cargamos la configuración
-        Properties props = ConfigLoader.getProperties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kstream-agg-app");
+    private static Topology createTopology() {
 
-        final String inputTopic = "temperature-telemetry-avro";
+        final String inputTopic = "temperature-telemetry";
         final String outputTopic = "temperature-telemetry-max";
 
         final Map<String, String> serdeConfig = Collections.singletonMap("schema.registry.url", "http://localhost:8081");
@@ -34,7 +31,7 @@ public class KStreamAggApp {
         Serde<TemperatureTelemetry> temperatureTelemetrySerde = new SpecificAvroSerde<>();
         temperatureTelemetrySerde.configure(serdeConfig, false);
 
-        Serde<GenericRecord>  genericSerde = new GenericAvroSerde();
+        Serde<GenericRecord> genericSerde = new GenericAvroSerde();
         genericSerde.configure(serdeConfig, false);
 
         //Creamos el KStream mediante el builder
@@ -45,15 +42,26 @@ public class KStreamAggApp {
                 .windowedBy(TimeWindows.of(Duration.ofMinutes(1)))
                 .aggregate(
                         () -> 0, // Valor inicial
-                        (k, v, total) -> Math.max(v.getTemperature(),total), // Agregar ingresos
-                         Materialized.with(Serdes.String(), Serdes.Integer())
+                        (k, v, total) -> Math.max(v.getTemperature(), total), // Agregar ingresos
+                        Materialized.with(Serdes.String(), Serdes.Integer())
                 )
                 .toStream()
-                .map((wk, value) -> KeyValue.pair(wk.key(),String.valueOf(value)))
+                .map((wk, value) -> KeyValue.pair(wk.key(), String.valueOf(value)))
                 .peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value))
                 .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
 
-        KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        return builder.build();
+    }
+
+    public static void main(String[] args) throws IOException {
+        // Cargamos la configuración
+        Properties props = ConfigLoader.getProperties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kstream-agg-app");
+
+        // Creamos la topologia
+        Topology topology = createTopology();
+
+        KafkaStreams streams = new KafkaStreams(topology, props);
         // Iniciar Kafka Streams
         streams.start();
         // Parada controlada en caso de apagado

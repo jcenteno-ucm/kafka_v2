@@ -9,7 +9,7 @@ public class ConsumerApp {
 
   public static void main(String[] args) {
     String config = "simple-client.properties";
-    String topic  = "temperature-telemetry";
+    String topic  = "temperature-telemetry-simple";
 
     Thread consumerThread1 = new Thread(() -> createConsumer("consumer-0",config,topic));
     Thread consumerThread2 = new Thread(() -> createConsumer("consumer-1",config,topic));

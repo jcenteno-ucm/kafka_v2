@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
@@ -22,13 +23,8 @@ public class KTableApp {
 
     private static final Logger logger = LoggerFactory.getLogger(KTableApp.class.getName());
 
-    public static void main(String[] args) throws IOException {
-
-        // Cargamos la configuración
-        Properties props = ConfigLoader.getProperties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "ktable-app");
-
-        final String inputTopic = "temperature-telemetry-avro";
+    private static Topology createTopology() {
+        final String inputTopic = "temperature-telemetry";
         final String outputTopic = "temperature-telemetry-low-temperature";
 
         //Creamos un Serde de tipo Avro ya que el productor produce <String,TemperatureTelemetry>
@@ -49,7 +45,19 @@ public class KTableApp {
                 .peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value))
                 .to(outputTopic, Produced.with(Serdes.String(), temperatureTelemetrySerde));
 
-        KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        return builder.build();
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        // Cargamos la configuración
+        Properties props = ConfigLoader.getProperties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "ktable-app");
+
+        // Creamos la topologia
+        Topology topology = createTopology();
+
+        KafkaStreams streams = new KafkaStreams(topology, props);
         // Iniciar Kafka Streams
         streams.start();
         // Parada controlada en caso de apagado

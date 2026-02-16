@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
@@ -22,13 +23,8 @@ public class KStreamApp {
 
     private static final Logger logger = LoggerFactory.getLogger(KStreamApp.class.getName());
 
-    public static void main(String[] args) throws IOException {
-
-        // Cargamos la configuración
-        Properties props = ConfigLoader.getProperties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kstream-app");
-
-        final String inputTopic = "temperature-telemetry-avro";
+    private static Topology createTopology() {
+        final String inputTopic = "temperature-telemetry";
         final String outputTopic = "temperature-telemetry-high-temperature";
 
         //Creamos un Serde de tipo Avro ya que el productor produce <String,TemperatureTelemetry>
@@ -48,11 +44,23 @@ public class KStreamApp {
                 .peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value))
                 .to(outputTopic, Produced.with(Serdes.String(), temperatureTelemetrySerde));
 
-       KafkaStreams streams = new KafkaStreams(builder.build(), props);
-           // Iniciar Kafka Streams
-       streams.start();
-           // Parada controlada en caso de apagado
-       Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        return builder.build();
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        // Cargamos la configuración
+        Properties props = ConfigLoader.getProperties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kstream-app");
+
+        // Creamos la topologia
+        Topology topology = createTopology();
+
+        KafkaStreams streams = new KafkaStreams(topology, props);
+        // Iniciar Kafka Streams
+        streams.start();
+        // Parada controlada en caso de apagado
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
     }
 }

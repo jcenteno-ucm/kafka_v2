@@ -5,7 +5,7 @@ El objetivo es practicar los principales conceptos que hemos visto en la teoría
 ## Setup
 
 Para practicar los siguientes ejercicios será necesario ejecutar la aplicación **ProducerAvroApp** que vimos durante la primera semana.
-Esta aplicación producía eventos en el topic **temperature-telemetry-avro**
+Esta aplicación producía eventos en el topic **temperature-telemetry**
 
 ## KStreamApp
 
@@ -53,18 +53,35 @@ Revisa el código de la aplicación para entender los pasos.
 
 Ejecuta la aplicación y observa el topic resultante.
 
-##
+## KStreamJoinApp
+
+En este caso vamos a cruzar dos streams: temperature-telemetry y devices.
+
+Para simular el maestro de dispositivos haremos uso de un conector.
+
+No olvides ejecuta el siguiente comando dentro del directorio 1.environment para instalar los conector plugins.
+
+```bash
+./install-connect-plugins.sh
+```
+Dentro del directorio 7.kafka_streams ejecuta los siguientes comandos para copiar lo schemas dentro del contenedor connect.
 
 ```bash
 docker cp src/main/avro/*Device.avsc connect:/home/appuser/
 docker cp src/main/avro/*Telemetry.avsc connect:/home/appuser/
-
 ```
+Lanzamos el conector de devices:
 
 ```bash
 curl -d @"./connectors/source-datagen-devices.json" -H "Content-Type: application/json" -X POST http://localhost:8083/connectors | jq
 ```
 
+No te alarmes si aparece en rojo o detenido. El motivo es que una vez publica 100 registros se detiene.
+
+El siguiente caso es opcional si ya tiene ejecutando el productor java utilizado en los ejercicios anteriores.
+
 ```bash
 curl -d @"./connectors/source-datagen-temperature-telemetry.json" -H "Content-Type: application/json" -X POST http://localhost:8083/connectors | jq
 ```
+
+Ejecuta la aplicación y observa el topic resultante.
